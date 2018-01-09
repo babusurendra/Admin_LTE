@@ -18,6 +18,8 @@ app.all("*", function(req, res, next) {
 var path = require("path");
 app.use(bodyparser.urlencoded());
 app.use(bodyparser.json());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(__dirname + "../dist"));
 // app.get('/', function(req, res) {
 //     //res.json("In Home page");
@@ -27,13 +29,10 @@ app.get(
   "/auth/google",
   passport.authenticate("google", {
     scope: [
-      "user:email",
-      "emails",
+
       "https://www.googleapis.com/auth/plus.me",
       "https://www.googleapis.com/auth/plus.login",
       "https://www.googleapis.com/auth/plus.profile.emails.read",
-      "include_email=true",
-      "https://www.google.com/m8/feeds"
     ]
   })
 );
@@ -42,7 +41,8 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   function(req, res) {
-    //console.log(req.user);
+    console.log(`user data is ${JSON.stringify(req.user)}`);
+    console.log("after call back");
     res.send("In Home");
     // Successful authentication, redirect home.
     //res.redirect('/dashboard');

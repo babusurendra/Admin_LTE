@@ -3,6 +3,16 @@
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+// used to deserialize the user
+passport.deserializeUser(function(id, done) {
+  userModel.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
 passport.use(
   new GoogleStrategy(
     {
@@ -13,7 +23,6 @@ passport.use(
       enableProof: true,
       profileFields: [
         "id",
-        "email",
         "emails",
         "gender",
         "link",
@@ -26,26 +35,25 @@ passport.use(
       enableProof: true,
       scope: [
         "profile",
-        "emails",
-        "user:email",
         "https://www.googleapis.com/auth/plus.me",
         "https://www.googleapis.com/auth/plus.login",
         "https://www.googleapis.com/auth/plus.profile.emails.read",
-        'include_email=true',
-        "https://www.google.com/m8/feeds",
       ]
     },
     function(accessToken, refreshToken, profile, cb) {
       // var data = profile.json();
+      var data = JSON.stringify(profile)
+      //console.log(`user data is ${JSON.stringify(profile)}`);
       console.log(`profile gender is  ${profile.gender}`);
       
       console.log(`user display name is ${profile.displayName}`);
-      console.log(`user email is ${ profile.email}`);
+      console.log(`users email is ${profile._json.emails[0].value}`)
+      //console.log(`user email is ${data.emails}`);
       //console.log(`${profile.name}`);
       // User.findOrCreate({ googleId: profile.id }, function (err, user) {
       //   return cb(err, user);
       // });
-      return cb(profile);
+      return cb(null, profile);
     }
   )
 );
