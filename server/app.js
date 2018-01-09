@@ -41,6 +41,7 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   function(req, res) {
+    req.logout();
     console.log(`user data is ${JSON.stringify(req.user)}`);
     console.log("after call back");
     res.send("In Home");

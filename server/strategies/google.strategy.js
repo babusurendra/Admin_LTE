@@ -8,11 +8,11 @@ passport.serializeUser(function(user, done) {
 });
 
 // used to deserialize the user
-passport.deserializeUser(function(id, done) {
-  userModel.findById(id, function(err, user) {
-    done(err, user);
-  });
-});
+// passport.deserializeUser(function(id, done) {
+//   userModel.findById(id, function(err, user) {
+//     done(err, user);
+//   });
+// });
 passport.use(
   new GoogleStrategy(
     {
